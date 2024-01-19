@@ -1,61 +1,71 @@
-import Notification from "./Notification"
+import { useState } from 'react'
 
-const BlogForm = props => (
-	<div>
-		<h2>create new</h2>
-		<form onSubmit={props.handleCreateBlog}>
-			title:
-			<input
-				type="text"
-				value={props.title}
-				name='Username'
-				onChange={ props.setTitle }
-			/><br />
-			author:
-			<input
-				type="text"
-				value={props.author}
-				name='Username'
-				onChange={ props.setAuthor }
-			/><br />
-			url:
-			<input
-				type="text"
-				value={props.url}
-				name='Username'
-				onChange={ props.setUrl }
-			/><br />
-		<button>create</button>
-	</form>
-	</div>
-)
+const Blog = ({ blog, username, handleBlogLike, handleDeleteBlog }) => {
+  const [displayBlog, setDisplayBlog] = useState(false)
+  const [buttonName, setButtonName] = useState('view')
+  const [likes, setLikes] = useState(blog.likes)
 
-const Blog = ({ blog }) => (
-  <div>
-    {blog.title} {blog.author}
-  </div>  
-)
+  const handleBlogView = () => {
+    setDisplayBlog(!displayBlog)
+    buttonName === 'view' ? setButtonName('hide') : setButtonName('view')
+  }
+
+  const putLike = async () => {
+    const updatedBlog = await handleBlogLike({
+      ...blog,
+      user: blog.user.id,
+      likes: likes + 1
+    })
+    setLikes(updatedBlog.likes)
+  }
+
+  const deleteBlog = async () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      await handleDeleteBlog(blog.id)
+    }
+  }
+
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5
+  }
+
+  return (
+    <div style={blogStyle}>
+      <div>
+        {blog.title} {blog.author}
+        <button onClick={handleBlogView}>{buttonName}</button>
+      </div>
+      {displayBlog && (
+        <div>
+          {blog.url} <br />
+          likes {likes} <button onClick={putLike}>like</button> <br />
+          {blog.user.username ? blog.user.username : username} <br />
+          {blog.user.username === username &&
+            <button onClick={deleteBlog}>remove</button>
+          }
+        </div>
+      )}
+    </div>
+  )
+}
 
 const Blogs = props => (
   <div>
-    <h2>blogs</h2>
-		<Notification message={props.message} style={props.style} />
-    <p>
-      {props.username} logged in
-      <button onClick={props.handleLogout}>logout</button>
-    </p>
-    <BlogForm
-      title={props.title}
-      author={props.author}
-      url={props.url}
-      setTitle={props.setTitle}
-      setAuthor={props.setAuthor}
-      setUrl={props.setUrl}
-      handleCreateBlog={props.handleCreateBlog}
-    />
     {props.blogs
-      .filter(blog => blog.user.username === props.username)
-      .map(blog => <Blog key={blog.id} blog={blog} />)
+      .sort((a, b) => b.likes - a.likes)
+      .map(blog => (
+        <Blog
+          key={blog.id}
+          blog={blog}
+          username={props.username}
+          handleBlogLike={props.handleBlogLike}
+          handleDeleteBlog={props.handleDeleteBlog}
+        />
+      ))
     }
   </div>
 )

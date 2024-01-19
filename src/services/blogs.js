@@ -12,7 +12,17 @@ const getAll = async () => {
 }
 
 const createNewBlog = async (blog, token) => {
-  await axios.post(baseUrl, blog, config(token))
+  const response = await axios.post(baseUrl, blog, config(token))
+  return response.data
 }
 
-export default { getAll, createNewBlog }
+const likeBlog = async blog => {
+  const response = await axios.put(`${baseUrl}/${blog.id}`, blog)
+  return response.data
+}
+
+const deleteBlog = async (id, token) => {
+  await axios.delete(`${baseUrl}/${id}`, config(token))
+}
+
+export default { getAll, createNewBlog, likeBlog, deleteBlog }

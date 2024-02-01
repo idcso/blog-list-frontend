@@ -11,12 +11,12 @@ const Blog = ({ blog, username, handleBlogLike, handleDeleteBlog }) => {
   }
 
   const putLike = async () => {
-    const updatedBlog = await handleBlogLike({
+    await handleBlogLike({
       ...blog,
       user: blog.user.id,
       likes: likes + 1
     })
-    setLikes(updatedBlog.likes)
+    setLikes(likes + 1)
   }
 
   const deleteBlog = async () => {
@@ -34,15 +34,15 @@ const Blog = ({ blog, username, handleBlogLike, handleDeleteBlog }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       <div>
         {blog.title} {blog.author}
         <button onClick={handleBlogView}>{buttonName}</button>
       </div>
       {displayBlog && (
-        <div>
+        <div className='blogInfo'>
           {blog.url} <br />
-          likes {likes} <button onClick={putLike}>like</button> <br />
+          likes {likes} <button datatype='like-button' onClick={putLike}>like</button> <br />
           {blog.user.username ? blog.user.username : username} <br />
           {blog.user.username === username &&
             <button onClick={deleteBlog}>remove</button>
@@ -54,7 +54,7 @@ const Blog = ({ blog, username, handleBlogLike, handleDeleteBlog }) => {
 }
 
 const Blogs = props => (
-  <div>
+  <div className='blogs'>
     {props.blogs
       .sort((a, b) => b.likes - a.likes)
       .map(blog => (
@@ -70,4 +70,4 @@ const Blogs = props => (
   </div>
 )
 
-export default Blogs
+export { Blog, Blogs }

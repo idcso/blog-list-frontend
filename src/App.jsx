@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import Blogs from './components/Blogs'
+import { Blogs } from './components/Blogs'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
@@ -62,8 +62,8 @@ const App = () => {
     }
   }
 
-  const handleBlogLike = async (blogObj) => {
-    return await blogService.likeBlog(blogObj)
+  const handleBlogLike = async (blog) => {
+    return await blogService.likeBlog(blog)
   }
 
   const handleDeleteBlog = async (id, token = user.token) => {

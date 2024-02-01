@@ -26,24 +26,27 @@ const BlogForm = ({ createBlog, token }) => {
         <input
           type="text"
           value={title}
-          name='Username'
+          name='title'
+          id='title'
           onChange={ ({ target }) => setTitle(target.value) }
         /><br />
 				author:
         <input
           type="text"
           value={author}
-          name='Username'
+          name='author'
+          id='author'
           onChange={ ({ target }) => setAuthor(target.value) }
         /><br />
 				url:
         <input
           type="text"
           value={url}
-          name='Username'
+          name='url'
+          id='url'
           onChange={ ({ target }) => setUrl(target.value) }
         /><br />
-        <button>create</button>
+        <button datatype='create-blog'>create</button>
       </form>
     </div>
   )

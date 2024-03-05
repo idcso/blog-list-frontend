@@ -1,10 +1,14 @@
-const Notification = ({ message, style }) => {
-  if (!message) return null
+import { useSelector } from 'react-redux'
+
+const Notification = () => {
+  const notification = useSelector(({ notification }) => notification)
 
   return (
-    <p className={style}>
-      {message}
-    </p>
+    <div>
+      {notification.message && (
+        <div className={notification.style}>{notification.message}</div>
+      )}
+    </div>
   )
 }
 

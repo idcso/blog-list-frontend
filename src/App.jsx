@@ -1,17 +1,19 @@
-import { useState, useEffect, useRef } from 'react'
-import blogService from './services/blogs'
-import loginService from './services/login'
+import { useEffect } from 'react'
 import { Blogs } from './components/Blogs'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
-import { useDispatch } from 'react-redux'
-import { setNotification } from './reducers/notificationSlice'
+import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from './reducers/blogReducer'
+import {
+  setUserLogin,
+  initializeUser,
+  setUserLogout,
+} from './reducers/userReducer'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 const App = () => {
-  const [user, setUser] = useState(null)
-
+  const user = useSelector(({ user }) => user)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -19,61 +21,33 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    const localUser = JSON.parse(window.localStorage.getItem('loggedInUser'))
-    if (localUser) {
-      setUser(localUser)
-    }
+    dispatch(initializeUser())
   }, [])
 
-  const userLogin = async (userObj) => {
-    try {
-      const user = await loginService.userLogin(userObj)
-      dispatch(
-        setNotification({
-          message: 'successfully logged in',
-          style: 'success',
-        })
-      )
-      setUser(user)
-      window.localStorage.setItem('loggedInUser', JSON.stringify(user))
-      return user
-    } catch (error) {
-      dispatch(
-        setNotification({
-          message: 'wrong username or password',
-          style: 'error',
-        })
-      )
-    }
+  const userLogin = (userObj) => {
+    dispatch(setUserLogin(userObj))
   }
 
   const handleLogout = () => {
-    window.localStorage.removeItem('loggedInUser')
-    setUser(null)
-    dispatch(
-      setNotification({
-        message: 'successfully logged out',
-        style: 'success',
-      })
-    )
+    dispatch(setUserLogout())
   }
 
   return (
-    <div>
+    <Router>
       {!user && <LoginForm userLogin={userLogin} />}
       {user && (
         <div>
           <h2>blogs</h2>
           <Notification />
-          <p>
-            {user.username} logged in
-            <button onClick={handleLogout}>logout</button>
-          </p>
+          <p>{user.username} logged in</p>
+          <button style={{ marginBottom: 20 }} onClick={handleLogout}>
+            logout
+          </button>
           <BlogForm token={user.token} />
           <Blogs user={user} />
         </div>
       )}
-    </div>
+    </Router>
   )
 }
 

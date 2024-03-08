@@ -41,38 +41,39 @@ const BlogForm = ({ token }) => {
   return (
     <Togglable buttonLabel="new blog" ref={blogFormRef}>
       <div>
-      <h2>create new</h2>
-      <form onSubmit={handleCreateBlog}>
-        title:
-        <input
-          type="text"
-          value={title}
-          name="title"
-          id="title"
-          onChange={({ target }) => setTitle(target.value)}
-        />
-        <br />
-        author:
-        <input
-          type="text"
-          value={author}
-          name="author"
-          id="author"
-          onChange={({ target }) => setAuthor(target.value)}
-        />
-        <br />
-        url:
-        <input
-          type="text"
-          value={url}
-          name="url"
-          id="url"
-          onChange={({ target }) => setUrl(target.value)}
-        />
-        <br />
-        <button datatype="create-blog">create</button>
-      </form>
-    </div>
+        <h2 style={{ marginTop: 0 }}>create new</h2>
+        <form onSubmit={handleCreateBlog}>
+          title:
+          <input
+            type="text"
+            value={title}
+            name="title"
+            id="title"
+            onChange={({ target }) => setTitle(target.value)}
+          />
+          <br />
+          author:
+          <input
+            type="text"
+            value={author}
+            name="author"
+            id="author"
+            onChange={({ target }) => setAuthor(target.value)}
+          />
+          <br />
+          url:
+          <input
+            type="text"
+            value={url}
+            name="url"
+            id="url"
+            onChange={({ target }) => setUrl(target.value)}
+            style={{ marginBottom: 5 }}
+          />
+          <br />
+          <button datatype="create-blog">create</button>
+        </form>
+      </div>
     </Togglable>
   )
 }

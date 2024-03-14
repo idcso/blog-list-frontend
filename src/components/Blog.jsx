@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { likeBlog, deleteBlog } from '../reducers/blogReducer'
+import { likeBlog, deleteBlog, createComment } from '../reducers/blogReducer'
+import CommentForm from './CommentForm'
 
 const Blog = ({ blog, user }) => {
   if (!blog) {
@@ -8,6 +9,7 @@ const Blog = ({ blog, user }) => {
   }
 
   const [likes, setLikes] = useState(blog.likes)
+  const [comments, setComments] = useState(blog.comments)
   const dispatch = useDispatch()
 
   const putLike = () => {
@@ -27,6 +29,13 @@ const Blog = ({ blog, user }) => {
     }
   }
 
+  const handleCreateComment = (comment, id = blog.id) => {
+    dispatch(createComment(comment, id))
+    setComments(comments.concat(comment))
+  }
+
+  const idGenerator = () => Math.floor(Math.random() * 100000)
+
   return (
     <div className="blog">
       <h2>
@@ -45,6 +54,13 @@ const Blog = ({ blog, user }) => {
           <button onClick={handleDeleteBlog}>remove</button>
         )}
       </div>
+      <h3>comments</h3>
+      <CommentForm handleCreateComment={handleCreateComment} />
+      <ul>
+        {comments.map((comment) => (
+          <li key={idGenerator()}>{comment}</li>
+        ))}
+      </ul>
     </div>
   )
 }

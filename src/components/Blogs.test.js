@@ -11,15 +11,17 @@ describe('<Blog />', () => {
     url: 'test url',
     likes: 444,
     user: {
-      username: 'test username'
-    }
+      username: 'test username',
+    },
   }
   const mockHandler = jest.fn()
 
   let container
 
   beforeEach(() => {
-    container = render(<Blog blog={blog} handleBlogLike={mockHandler} />).container
+    container = render(
+      <Blog blog={blog} handleBlogLike={mockHandler} />
+    ).container
   })
 
   test('renders the blog with title and author, but without url and likes', () => {

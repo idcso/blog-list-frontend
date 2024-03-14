@@ -39,7 +39,7 @@ const BlogForm = ({ token }) => {
   }
 
   return (
-    <Togglable buttonLabel="new blog" ref={blogFormRef}>
+    <Togglable buttonLabel="create new" ref={blogFormRef}>
       <div>
         <h2 style={{ marginTop: 0 }}>create new</h2>
         <form onSubmit={handleCreateBlog}>

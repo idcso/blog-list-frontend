@@ -9,7 +9,9 @@ describe('<BlogForm />', () => {
     const user = userEvent.setup()
     const createBlog = jest.fn()
 
-    const { container } = render(<BlogForm createBlog={createBlog} token='validToken' />)
+    const { container } = render(
+      <BlogForm createBlog={createBlog} token="validToken" />
+    )
 
     const titleInput = container.querySelector('input[name="title"]')
     const authorInput = container.querySelector('input[name="author"]')
@@ -22,15 +24,13 @@ describe('<BlogForm />', () => {
     await user.click(createButton)
 
     expect(createBlog.mock.calls).toHaveLength(1)
-    expect(createBlog.mock.calls[0]).toEqual(
-      [
-        {
-          title: 'test title',
-          author: 'test author',
-          url: 'test url'
-        },
-        'validToken'
-      ]
-    )
+    expect(createBlog.mock.calls[0]).toEqual([
+      {
+        title: 'test title',
+        author: 'test author',
+        url: 'test url',
+      },
+      'validToken',
+    ])
   })
 })

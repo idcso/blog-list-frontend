@@ -1,8 +1,12 @@
-import { useEffect } from 'react'
-import { Blogs } from './components/Blogs'
+import { useState, useEffect } from 'react'
+import Blogs from './components/Blogs'
+import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import Users from './components/Users'
+import User from './components/User'
+import usersService from './services/users'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from './reducers/blogReducer'
 import {
@@ -10,11 +14,18 @@ import {
   initializeUser,
   setUserLogout,
 } from './reducers/userReducer'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { Routes, Route, useMatch, Link, useNavigate } from 'react-router-dom'
 
 const App = () => {
+  const [users, setUsers] = useState([])
   const user = useSelector(({ user }) => user)
+  const blogs = useSelector(({ blogs }) => blogs)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    ;(async () => setUsers(await usersService.getAllUsers()))()
+  }, [])
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -30,24 +41,63 @@ const App = () => {
 
   const handleLogout = () => {
     dispatch(setUserLogout())
+    navigate('/')
+  }
+
+  const blogMatch = useMatch('/blogs/:id')
+  const blog = blogMatch
+    ? blogs.find((blog) => blog.id === blogMatch.params.id)
+    : null
+
+  const userMatch = useMatch('/users/:id')
+  const userInfo = userMatch
+    ? users.find((user) => user.id === userMatch.params.id)
+    : null
+
+  const navStyle = {
+    margin: 4,
   }
 
   return (
-    <Router>
+    <div>
       {!user && <LoginForm userLogin={userLogin} />}
-      {user && (
+      {user && users && (
         <div>
-          <h2>blogs</h2>
+          <nav>
+            <Link to="/blogs" style={navStyle}>
+              blogs
+            </Link>
+            <Link to="/users" style={navStyle}>
+              users
+            </Link>
+            {user.username} logged in
+            <button style={navStyle} onClick={handleLogout}>
+              logout
+            </button>
+          </nav>
           <Notification />
-          <p>{user.username} logged in</p>
-          <button style={{ marginBottom: 20 }} onClick={handleLogout}>
-            logout
-          </button>
-          <BlogForm token={user.token} />
-          <Blogs user={user} />
+          <h2>blog app</h2>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  <BlogForm token={user.token} />
+                  <Blogs />
+                </>
+              }
+            />
+            <Route path="blogs" element={<Blogs />} />
+            <Route
+              path="blogs/:id"
+              element={<Blog blog={blog} user={user} />}
+            />
+            <Route path="users" element={<Users users={users} />} />
+            <Route path="/users/:id" element={<User user={userInfo} />} />
+          </Routes>
         </div>
       )}
-    </Router>
+    </div>
   )
 }
 
